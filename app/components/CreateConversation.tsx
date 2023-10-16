@@ -22,7 +22,13 @@ export const CreateConversation: FC<Props> = ({ userId }) => {
   );
 
   return (
-    <Button type="button" color="primary" fullWidth onClick={onClickHandler}>
+    <Button
+      type="button"
+      color="primary"
+      variant="flat"
+      fullWidth
+      onClick={onClickHandler}
+    >
       New Conversation
     </Button>
   );

@@ -2,31 +2,38 @@
 
 import { useCallback } from "react";
 import { Button, Input } from "@nextui-org/react";
-import { minLength, object, string, Input as Infer } from "valibot";
+import { minLength, object, string, number, Input as Infer } from "valibot";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-
-import { addUserAction } from "@/db/services";
+import { joinConversation } from "@/db/services";
 
 const schema = object({
   username: string([minLength(3)]),
+  chatId: number(),
 });
 
-export type FormValues = Infer<typeof schema>;
+export type InvitationFormValues = Infer<typeof schema>;
 
-export default function Index() {
-  const { handleSubmit, control, setError } = useForm<FormValues>({
+interface Props {
+  params: {
+    chatId: string;
+  };
+}
+
+export default function Index({ params }: Props) {
+  const { handleSubmit, control, setError } = useForm<InvitationFormValues>({
     defaultValues: {
       username: "",
+      chatId: Number(params.chatId),
     },
     mode: "onSubmit",
     resolver: valibotResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormValues> = useCallback(
+  const onSubmit: SubmitHandler<InvitationFormValues> = useCallback(
     async (data) => {
       try {
-        await addUserAction(data);
+        await joinConversation(data);
       } catch (cause) {
         if (cause instanceof Error) {
           setError("username", { message: cause.message });
@@ -39,6 +46,7 @@ export default function Index() {
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <div className="flex flex-col items-center space-y-4 w-1/5">
+        <h3 className="text-lg leading-relaxed">Invitation link</h3>
         <Controller
           name="username"
           control={control}

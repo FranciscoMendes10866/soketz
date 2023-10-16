@@ -5,7 +5,9 @@ import { nanoid } from "nanoid";
 
 import type { FormValues as IAddUser } from "@/app/page";
 import { db } from "../client";
-import { conversations, participants, users } from "../schema";
+import { conversations, messages, participants, users } from "../schema";
+import type { InvitationFormValues } from "@/app/invite/[chatId]/page";
+import { TextFieldFormValues } from "@/app/components/ConversationTextField";
 
 ////////////////////////
 
@@ -51,4 +53,40 @@ export async function bootstrapNewConversation(userId: number) {
   }
 
   redirect(`/conversations/${userId}/${conversationId}`);
+}
+
+export async function joinConversation(data: InvitationFormValues) {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.username, data.username),
+  });
+
+  const userId = user?.id;
+
+  if (typeof userId !== "number") {
+    throw new Error("An error has occurred.");
+  }
+
+  const result = await db
+    .insert(participants)
+    .values({ userId, conversationId: data.chatId });
+
+  if (result.changes < 1) {
+    throw new Error("An error has occurred.");
+  }
+
+  redirect(`/conversations/${userId}/${result.lastInsertRowid}`);
+}
+
+export async function sendMessage(data: TextFieldFormValues) {
+  const result = await db
+    .insert(messages)
+    .values({
+      conversationId: data.chatId,
+      senderId: data.userId,
+      body: data.body,
+    });
+
+  if (result.changes < 1) {
+    throw new Error("An error has occurred.");
+  }
 }

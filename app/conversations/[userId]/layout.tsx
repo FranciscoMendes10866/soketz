@@ -33,7 +33,7 @@ export default async function Layout({
 
   return (
     <div className="h-screen w-screen flex">
-      <div className="w-2/6 h-full flex flex-col items-center justify-center space-y-4">
+      <div className="w-2/6 h-full flex flex-col items-center justify-center space-y-4 border-r-1.5">
         <div className="w-[90%]">
           <CreateConversation userId={userId} />
         </div>
@@ -43,16 +43,16 @@ export default async function Layout({
             <Link
               key={item.conversationId}
               href={`/conversations/${userId}/${item.conversationId}`}
-              className="h-16 w-full flex items-center justify-start bg-purple-500"
+              className="h-16 w-full flex items-center justify-start border-1.5"
             >
-              <span className="mx-4 truncate text-white">
+              <span className="mx-4 truncate">
                 {item.conversation.name}
               </span>
             </Link>
           ))}
         </div>
       </div>
-      <div className="w-4/6 h-full bg-blue-500">{children}</div>
+      <div className="w-4/6 h-full">{children}</div>
     </div>
   );
 }
