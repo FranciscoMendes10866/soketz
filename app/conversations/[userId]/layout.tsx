@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import Link from "next/link";
 
-import { CreateConversation } from "@/app/components/CreateConversation";
+import { CreateConversation } from "@/components/CreateConversation";
 import { db } from "@/db/client";
 
 interface Props {

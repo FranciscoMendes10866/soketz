@@ -7,7 +7,8 @@ import type { FormValues as IAddUser } from "@/app/page";
 import { db } from "../client";
 import { conversations, messages, participants, users } from "../schema";
 import type { InvitationFormValues } from "@/app/invite/[chatId]/page";
-import { TextFieldFormValues } from "@/app/components/ConversationTextField";
+import { TextFieldFormValues } from "@/components/ConversationTextField";
+import { pusherServer } from "@/soketi";
 
 ////////////////////////
 
@@ -84,9 +85,14 @@ export async function sendMessage(data: TextFieldFormValues) {
       conversationId: data.chatId,
       senderId: data.userId,
       body: data.body,
-    });
+    })
+    .returning();
 
-  if (result.changes < 1) {
-    throw new Error("An error has occurred.");
+  for await (const item of result) {
+    await pusherServer.trigger(
+      data.chatId.toString(),
+      "evt::new-message",
+      item
+    );
   }
 }
