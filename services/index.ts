@@ -4,13 +4,11 @@ import { redirect } from "next/navigation";
 import { nanoid } from "nanoid";
 
 import type { FormValues as IAddUser } from "@/app/page";
-import { db } from "../client";
-import { conversations, messages, participants, users } from "../schema";
+import { db } from "../db/client";
+import { conversations, messages, participants, users } from "../db/schema";
 import type { InvitationFormValues } from "@/app/invite/[chatId]/page";
 import { TextFieldFormValues } from "@/components/ConversationTextField";
 import { pusherServer } from "@/soketi";
-
-////////////////////////
 
 export async function addUserAction(data: IAddUser) {
   let userId: number | undefined;
@@ -34,7 +32,7 @@ export async function addUserAction(data: IAddUser) {
   redirect(`/conversations/${userId}`);
 }
 
-export async function bootstrapNewConversation(userId: number) {
+export async function bootstrapNewConversationAction(userId: number) {
   const conversation = await db
     .insert(conversations)
     .values({ name: nanoid() });
@@ -56,7 +54,7 @@ export async function bootstrapNewConversation(userId: number) {
   redirect(`/conversations/${userId}/${conversationId}`);
 }
 
-export async function joinConversation(data: InvitationFormValues) {
+export async function joinConversationAction(data: InvitationFormValues) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.username, data.username),
   });
@@ -75,10 +73,10 @@ export async function joinConversation(data: InvitationFormValues) {
     throw new Error("An error has occurred.");
   }
 
-  redirect(`/conversations/${userId}/${result.lastInsertRowid}`);
+  redirect(`/conversations/${userId}/${data.chatId}`);
 }
 
-export async function sendMessage(data: TextFieldFormValues) {
+export async function sendMessageAction(data: TextFieldFormValues) {
   const result = await db
     .insert(messages)
     .values({

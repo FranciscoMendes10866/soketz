@@ -30,16 +30,7 @@ export default async function Page({ params }: Props) {
         </div>
       </div>
 
-      {result.length === 0 ? (
-        <div className="h-full w-full flex flex-col items-center justify-center space-y-1">
-          <span className="text-lg leading-relaxed text-gray-500">
-            Be the first one to send the first text
-          </span>
-          <small className="text-gray-400 leading-relaxed">or just wait</small>
-        </div>
-      ) : (
-        <MessageList initialMessages={result} userId={userId} chatId={chatId} />
-      )}
+      <MessageList initialMessages={result} userId={userId} chatId={chatId} />
 
       <div className="w-full h-24 border-t-1.5">
         <ConversationTextField chatId={chatId} userId={userId} />

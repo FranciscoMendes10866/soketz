@@ -2,7 +2,8 @@
 
 import { useCallback, type FC, type MouseEventHandler } from "react";
 import { Button } from "@nextui-org/react";
-import { bootstrapNewConversation } from "@/db/services";
+
+import { bootstrapNewConversationAction } from "@/services";
 
 interface Props {
   userId: number;
@@ -13,7 +14,7 @@ export const CreateConversation: FC<Props> = ({ userId }) => {
     async (evt) => {
       evt.stopPropagation();
       try {
-        await bootstrapNewConversation(userId);
+        await bootstrapNewConversationAction(userId);
       } catch (cause) {
         console.error(cause);
       }

@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, unique } from "drizzle-orm/sqlite-core";
 
 /**
  * Table Definitions
@@ -26,15 +26,24 @@ export const messages = sqliteTable("messages", {
     .references(() => users.id),
 });
 
-export const participants = sqliteTable("participants", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  conversationId: integer("conversation_id")
-    .notNull()
-    .references(() => conversations.id),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id),
-});
+export const participants = sqliteTable(
+  "participants",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    conversationId: integer("conversation_id")
+      .notNull()
+      .references(() => conversations.id),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+  },
+  (table) => ({
+    participantUniqueConstraint: unique("participant_unique_constraint").on(
+      table.conversationId,
+      table.userId
+    ),
+  })
+);
 
 /**
  * Table Relationships

@@ -6,7 +6,7 @@ import { minLength, object, string, Input as Infer } from "valibot";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 
-import { addUserAction } from "@/db/services";
+import { addUserAction } from "@/services";
 
 const schema = object({
   username: string([minLength(3)]),

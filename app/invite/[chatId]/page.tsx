@@ -5,7 +5,8 @@ import { Button, Input } from "@nextui-org/react";
 import { minLength, object, string, number, Input as Infer } from "valibot";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { joinConversation } from "@/db/services";
+
+import { joinConversationAction } from "@/services";
 
 const schema = object({
   username: string([minLength(3)]),
@@ -33,7 +34,7 @@ export default function Index({ params }: Props) {
   const onSubmit: SubmitHandler<InvitationFormValues> = useCallback(
     async (data) => {
       try {
-        await joinConversation(data);
+        await joinConversationAction(data);
       } catch (cause) {
         if (cause instanceof Error) {
           setError("username", { message: cause.message });

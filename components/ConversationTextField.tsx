@@ -5,7 +5,8 @@ import { Button, Input } from "@nextui-org/react";
 import { minLength, object, string, number, Input as Infer } from "valibot";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { sendMessage } from "@/db/services";
+
+import { sendMessageAction } from "@/services";
 
 const schema = object({
   body: string([minLength(1)]),
@@ -32,7 +33,7 @@ export function ConversationTextField({ chatId, userId }: Props) {
   const onSubmit: SubmitHandler<TextFieldFormValues> = useCallback(
     async (data) => {
       try {
-        await sendMessage(data);
+        await sendMessageAction(data);
         reset();
       } catch (cause) {
         if (cause instanceof Error) {
