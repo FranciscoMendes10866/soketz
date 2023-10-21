@@ -67,10 +67,11 @@ export async function joinConversationAction(data: InvitationFormValues) {
 
   const result = await db
     .insert(participants)
-    .values({ userId, conversationId: data.chatId });
+    .values({ userId, conversationId: data.chatId })
+    .onConflictDoNothing();
 
   if (result.changes < 1) {
-    throw new Error("An error has occurred.");
+    throw new Error("This username is already part of the chat");
   }
 
   redirect(`/conversations/${userId}/${data.chatId}`);
